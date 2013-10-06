@@ -1,4 +1,4 @@
-package ru.yaal.project.urldatabase;
+package ru.yaal.project.urldatabase.index;
 
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -12,7 +12,7 @@ import java.util.Random;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
-import static ru.yaal.project.urldatabase.ActualFile.ACTUAL_CODE;
+import static ru.yaal.project.urldatabase.index.ActualFile.ACTUAL_CODE;
 
 public class ActualFileTest {
     private final Random random = new Random();

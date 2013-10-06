@@ -1,4 +1,4 @@
-package ru.yaal.project.urldatabase;
+package ru.yaal.project.urldatabase.index;
 
 import java.io.*;
 
