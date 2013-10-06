@@ -1,13 +1,11 @@
 package ru.yaal.project.urldatabase.loadable;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.net.URL;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Date;
-
-import static java.lang.String.format;
 
 /**
  * Объект БД, представленный файлом на диске.
@@ -15,62 +13,28 @@ import static java.lang.String.format;
  * Date: 06.10.13
  */
 public class FileLoadable extends AbstractLoadable {
-    private final BufferedReader bufferedReader;
-    private final DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();//инъекция DI
-    private boolean loaded = false;
+    private ILoadable inputStreamLoadable;
 
     public FileLoadable(File file) throws FileNotFoundException {
-        this(new BufferedReader(new FileReader(file)));
+        this(new FileInputStream(file));
     }
 
-    public FileLoadable(BufferedReader bufferedReader) {
-        this.bufferedReader = bufferedReader;
-    }
-
-    private void load() {
-        loaded = true;
-        try (BufferedReader bir = bufferedReader) {
-            setUrl(bir.readLine());
-            String dateStr = null;
-            try {
-                dateStr = bir.readLine();
-                setLoadDate(dateFormat.parse(dateStr));
-            } catch (ParseException | NullPointerException e) {
-                throw new IllegalArgumentException(format("Incorrect Date: %s", dateStr));
-            }
-            //todo заменить алгоримт чтения по символам на чтение по байтам
-            String line;
-            StringBuilder builder = new StringBuilder();
-            while ((line = bir.readLine()) != null) {
-                builder.append(line);
-            }
-            setContent(builder.toString().getBytes());
-        } catch (IOException e) {
-            e.printStackTrace();  //todo добавить логгер
-        }
+    public FileLoadable(InputStream stream) {
+        inputStreamLoadable = new InputStreamLoadable(stream);
     }
 
     @Override
     public URL getUrl() {
-        if (!loaded) {
-            load();
-        }
-        return super.getUrl();
+        return inputStreamLoadable.getUrl();
     }
 
     @Override
     public byte[] getContent() {
-        if (!loaded) {
-            load();
-        }
-        return super.getContent();
+        return inputStreamLoadable.getContent();
     }
 
     @Override
     public Date getLoadDate() {
-        if (!loaded) {
-            load();
-        }
-        return super.getLoadDate();
+        return inputStreamLoadable.getLoadDate();
     }
 }

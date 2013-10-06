@@ -43,7 +43,7 @@ public class UrlStorageTest {
         return new Object[][]{
                 {new URL("https://www.yaal.ru"), new Date(), "my content".getBytes()},
                 {new URL("https://www.mail.ru"), new Date(), "everybody common!".getBytes()},
-                //{new URL("http://www.yandex.ru"), new Date(), "\t   aga\\ no  \n bbb".getBytes()},//todo падает тест, проверить все спецсимволы
+                {new URL("http://www.yandex.ru"), new Date(), "\t   aga\\ no  \n bbb".getBytes()},
                 {new URL("http://www.amazon.com"), new Date(), "fuck off".getBytes()},
                 {new URL("http://www.wikipedia.org\\articles"), new Date(), "simple text".getBytes()}
         };
