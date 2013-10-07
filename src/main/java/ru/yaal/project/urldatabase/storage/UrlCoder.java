@@ -11,7 +11,7 @@ import java.security.MessageDigest;
  * User: Aleks
  * Date: 06.10.13
  */
-public class UrlCoder implements ICoder<URL> {
+class UrlCoder implements ICoder<URL> {
     private final File root;
     private final MessageDigest digest;
 

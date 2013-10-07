@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
-    <context:component-scan base-package="ru.yaal.project.urldatabase"/>
-    <bean name="sha-1" class="ru.yaal.project.urldatabase.spring.SHA1FactoryBean" scope="prototype"/>
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+    <bean name="sha-1" class="java.security.MessageDigest" factory-method="getInstance" scope="prototype">
+        <constructor-arg value="SHA-1"/>
+    </bean>
     <bean name="urlCoder" class="ru.yaal.project.urldatabase.storage.UrlCoder" scope="prototype">
-        <constructor-arg name="root" type="java.io.File">
-            <value>root</value>
-        </constructor-arg>
+        <constructor-arg name="root" type="java.io.File" value="root"/>
         <constructor-arg ref="sha-1"/>
     </bean>
     <bean name="urlStorage" class="ru.yaal.project.urldatabase.storage.UrlStorage" scope="prototype">
         <constructor-arg name="coder" ref="urlCoder"/>
+        <constructor-arg name="dateFormat" ref="dateFormat"/>
     </bean>
+    <bean name="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
 </beans>

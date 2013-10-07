@@ -9,19 +9,19 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 
 /**
  * Обращение к хранилищу БД по URL.
  * User: Aleks
  * Date: 06.10.13
  */
-public class UrlStorage extends AbstractStorage<URL> {
+class UrlStorage extends AbstractStorage<URL> {
     private final ICoder<URL> coder;
-    private final DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();//инъекция DI
+    private final DateFormat dateFormat;
 
-    public UrlStorage(ICoder<URL> coder) {
+    public UrlStorage(ICoder<URL> coder, DateFormat dateFormat) {
         this.coder = coder;
+        this.dateFormat = dateFormat;
     }
 
     @Override

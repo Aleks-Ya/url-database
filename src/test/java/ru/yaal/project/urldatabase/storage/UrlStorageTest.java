@@ -2,17 +2,13 @@ package ru.yaal.project.urldatabase.storage;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.yaal.project.urldatabase.loadable.ILoadable;
 import ru.yaal.project.urldatabase.loadable.MemoryLoadable;
 
-import java.io.File;
-import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Files;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -21,15 +17,8 @@ import static org.testng.Assert.*;
 import static uk.co.it.modular.hamcrest.date.DateMatchers.within;
 
 public class UrlStorageTest {
-    private IStorage<URL> storage;
-    private ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
-
-    @BeforeClass
-    public void beforeClass() throws IOException {
-        File root = Files.createTempDirectory("UrlDatabase").toFile();
-        root.deleteOnExit();
-        storage = context.getBean("urlStorage", IStorage.class);
-    }
+    private static ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
+    private static IStorage<URL> storage = context.getBean("urlStorage", UrlStorage.class);
 
     @Test(dataProvider = "loadableProvider")
     public void putAndGet(URL url, Date loadDate, byte[] content) throws MalformedURLException {
