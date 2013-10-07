@@ -5,6 +5,7 @@ test {
     useTestNG()
 }
 dependencies {
+    compile 'org.springframework:spring-context:3.2.4.RELEASE'
     testCompile 'org.testng:testng:6.8.7', 'uk.co.modular-it:hamcrest-date:0.9.5', 'org.mockito:mockito-all:1.9.5'
 }
 repositories {

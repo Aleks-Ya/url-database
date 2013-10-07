@@ -1,5 +1,7 @@
 package ru.yaal.project.urldatabase.storage;
 
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
@@ -20,12 +22,13 @@ import static uk.co.it.modular.hamcrest.date.DateMatchers.within;
 
 public class UrlStorageTest {
     private IStorage<URL> storage;
+    private ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
 
     @BeforeClass
     public void beforeClass() throws IOException {
         File root = Files.createTempDirectory("UrlDatabase").toFile();
         root.deleteOnExit();
-        storage = new UrlStorage(root);
+        storage = new UrlStorage(root, context);//todo использовать DI
     }
 
     @Test(dataProvider = "loadableProvider")

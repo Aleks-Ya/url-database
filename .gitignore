@@ -1,3 +1,6 @@
 .idea
 classes
 UrlDatabase.iml
+.gradle
+
+build

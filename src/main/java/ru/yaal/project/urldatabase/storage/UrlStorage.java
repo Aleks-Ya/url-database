@@ -1,5 +1,6 @@
 package ru.yaal.project.urldatabase.storage;
 
+import org.springframework.context.ApplicationContext;
 import ru.yaal.project.urldatabase.loadable.FileLoadable;
 import ru.yaal.project.urldatabase.loadable.ILoadable;
 
@@ -20,8 +21,9 @@ public class UrlStorage extends AbstractStorage<URL> {
     private final ICoder<URL> coder;
     private final DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();//инъекция DI
 
-    public UrlStorage(File root) {
-        coder = new UrlCoder(root); //todo инъекция срингом
+    public UrlStorage(File root, ApplicationContext context) {
+        super(context);
+        coder = new UrlCoder(root, context); //todo инъекция срингом
     }
 
     @Override

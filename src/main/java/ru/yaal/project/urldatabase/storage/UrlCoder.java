@@ -1,11 +1,11 @@
 package ru.yaal.project.urldatabase.storage;
 
+import org.springframework.context.ApplicationContext;
 import ru.yaal.project.urldatabase.loadable.ILoadable;
 
 import java.io.File;
 import java.net.URL;
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
 
 /**
  * Кодирует URL в SHA-1.
@@ -16,14 +16,9 @@ public class UrlCoder implements ICoder<URL> {
     private final File root;
     private final MessageDigest digest;
 
-    public UrlCoder(File root) {
+    public UrlCoder(File root, ApplicationContext context) {
         this.root = root;
-        try {
-            digest = MessageDigest.getInstance("SHA-1");//todo кандидат на внедрение Spring'ом
-        } catch (NoSuchAlgorithmException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
-
+        digest = context.getBean("sha-1", MessageDigest.class);
     }
 
     private String hashToString(byte[] hash) {
