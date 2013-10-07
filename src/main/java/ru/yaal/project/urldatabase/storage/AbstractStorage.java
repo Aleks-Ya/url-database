@@ -8,9 +8,4 @@ import org.springframework.context.ApplicationContext;
  * Date: 06.10.13
  */
 public abstract class AbstractStorage<T> implements IStorage<T> {
-    protected final ApplicationContext context;
-
-    public AbstractStorage(ApplicationContext context) {
-        this.context = context;
-    }
 }

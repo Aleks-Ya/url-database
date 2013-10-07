@@ -1,6 +1,5 @@
 package ru.yaal.project.urldatabase.storage;
 
-import org.springframework.context.ApplicationContext;
 import ru.yaal.project.urldatabase.loadable.ILoadable;
 
 import java.io.File;
@@ -16,9 +15,9 @@ public class UrlCoder implements ICoder<URL> {
     private final File root;
     private final MessageDigest digest;
 
-    public UrlCoder(File root, ApplicationContext context) {
+    public UrlCoder(File root, MessageDigest digest) {
         this.root = root;
-        digest = context.getBean("sha-1", MessageDigest.class);
+        this.digest = digest;
     }
 
     private String hashToString(byte[] hash) {

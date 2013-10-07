@@ -28,7 +28,7 @@ public class UrlStorageTest {
     public void beforeClass() throws IOException {
         File root = Files.createTempDirectory("UrlDatabase").toFile();
         root.deleteOnExit();
-        storage = new UrlStorage(root, context);//todo использовать DI
+        storage = context.getBean("urlStorage", IStorage.class);
     }
 
     @Test(dataProvider = "loadableProvider")
