@@ -1,7 +1,6 @@
-package ru.yaal.project.urldatabase;
+package ru.yaal.project.urldatabase.loadable;
 
 import org.testng.annotations.Test;
-import ru.yaal.project.urldatabase.loadable.MemoryLoadable;
 
 import java.net.URL;
 import java.util.Date;

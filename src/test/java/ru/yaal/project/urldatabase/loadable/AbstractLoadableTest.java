@@ -12,7 +12,7 @@ public class AbstractLoadableTest {
     public void testEquals() throws Exception {
         URL url = new URL("http://ya.ru");
         Date date = new Date();
-        byte[] content = "contetn".getBytes();
+        byte[] content = "content".getBytes();
         ILoadable first = new MemoryLoadable(url, date, content);
         ILoadable second = new MemoryLoadable(url, date, content);
         assertEquals(first, second);
