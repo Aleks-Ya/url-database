@@ -14,4 +14,22 @@
         <constructor-arg name="dateFormat" ref="dateFormat"/>
     </bean>
     <bean name="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
+    <bean name="abstractLoadable" abstract="true" class="ru.yaal.project.urldatabase.loadable.AbstractLoadable"
+          scope="prototype">
+        <property name="dateFormat" ref="dateFormat"/>
+    </bean>
+    <bean name="memoryLoadable" class="ru.yaal.project.urldatabase.loadable.MemoryLoadable" scope="prototype"
+          parent="abstractLoadable">
+        <constructor-arg type="java.net.URL" value="null"/>
+        <constructor-arg type="java.util.Date" value="null"/>
+        <constructor-arg type="byte[]" value="null"/>
+    </bean>
+    <bean name="inputStreamLoadable" class="ru.yaal.project.urldatabase.loadable.InputStreamLoadable" scope="prototype"
+          parent="abstractLoadable">
+        <constructor-arg type="java.io.InputStream" value="null"/>
+    </bean>
+    <bean name="fileLoadable" class="ru.yaal.project.urldatabase.loadable.InputStreamLoadable" scope="prototype"
+          parent="abstractLoadable">
+        <constructor-arg type="java.io.File" value="null"/>
+    </bean>
 </beans>

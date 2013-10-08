@@ -6,7 +6,7 @@ import java.util.Date;
 /**
  * Стандартная реализация (хранение в памяти).
  */
-public class MemoryLoadable extends AbstractLoadable {
+class MemoryLoadable extends AbstractLoadable {
 
     public MemoryLoadable(URL url, Date loadDate, byte[] content) {
         setUrl(url);

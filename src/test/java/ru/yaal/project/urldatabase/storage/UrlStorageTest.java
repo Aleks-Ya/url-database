@@ -5,7 +5,6 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.yaal.project.urldatabase.loadable.ILoadable;
-import ru.yaal.project.urldatabase.loadable.MemoryLoadable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -17,14 +16,14 @@ import static org.testng.Assert.*;
 import static uk.co.it.modular.hamcrest.date.DateMatchers.within;
 
 public class UrlStorageTest {
-    private static ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
-    private static IStorage<URL> storage = context.getBean("urlStorage", UrlStorage.class);
+    private static final ApplicationContext CONTEXT = new ClassPathXmlApplicationContext("spring-config.xml");
+    private static final IStorage<URL> STORAGE = CONTEXT.getBean("urlStorage", UrlStorage.class);
 
     @Test(dataProvider = "loadableProvider")
     public void putAndGet(URL url, Date loadDate, byte[] content) throws MalformedURLException {
-        ILoadable loadable = new MemoryLoadable(url, loadDate, content);
-        storage.put(loadable);
-        ILoadable actual = storage.get(url);
+        ILoadable loadable = (ILoadable) CONTEXT.getBean("memoryLoadable", url, loadDate, content);
+        STORAGE.put(loadable);
+        ILoadable actual = STORAGE.get(url);
         assertEquals(actual.getUrl(), url);
         assertThat(actual.getLoadDate(), within(1, TimeUnit.SECONDS, loadDate));
         assertEquals(actual.getContent(), content);
@@ -43,20 +42,20 @@ public class UrlStorageTest {
 
     @Test
     public void delete() throws Exception {
-        ILoadable loadable = new MemoryLoadable(
-                new URL("http://for_delete.ru"), new Date(), "I will be deleted :(".getBytes());
-        storage.put(loadable);
-        assertTrue(storage.isExists(loadable.getUrl()));
-        storage.delete(loadable);
-        assertFalse(storage.isExists(loadable.getUrl()));
+        ILoadable loadable = (ILoadable) CONTEXT.getBean(
+                "memoryLoadable", new URL("http://for_delete.ru"), new Date(), "I will be deleted :(".getBytes());
+        STORAGE.put(loadable);
+        assertTrue(STORAGE.isExists(loadable.getUrl()));
+        STORAGE.delete(loadable);
+        assertFalse(STORAGE.isExists(loadable.getUrl()));
     }
 
     @Test
     public void isExists() throws Exception {
-        assertFalse(storage.isExists(new URL("http://i_do_not_exists.ru")));
-        ILoadable loadable = new MemoryLoadable(new URL("http://ya.ru"), new Date(), "content".getBytes());
-        storage.put(loadable);
-        assertTrue(storage.isExists(loadable.getUrl()));
+        assertFalse(STORAGE.isExists(new URL("http://i_do_not_exists.ru")));
+        ILoadable loadable = (ILoadable) CONTEXT.getBean("memoryLoadable", new URL("http://ya.ru"), new Date(), "content".getBytes());
+        STORAGE.put(loadable);
+        assertTrue(STORAGE.isExists(loadable.getUrl()));
     }
 
     @Test
@@ -64,15 +63,15 @@ public class UrlStorageTest {
         final URL url = new URL("http://for_replace.ru");
 
         final byte[] firstContent = "I will be REPLACED :(".getBytes();
-        ILoadable first = new MemoryLoadable(url, new Date(), firstContent);
-        storage.put(first);
-        ILoadable firstGot = storage.get(url);
+        ILoadable first = (ILoadable) CONTEXT.getBean("memoryLoadable", url, new Date(), firstContent);
+        STORAGE.put(first);
+        ILoadable firstGot = STORAGE.get(url);
         assertEquals(firstGot.getContent(), firstContent);
 
         final byte[] secondContent = "I will REPLACE YOU!".getBytes();
-        ILoadable second = new MemoryLoadable(url, new Date(), secondContent);
-        storage.put(second);
-        ILoadable secondGot = storage.get(url);
+        ILoadable second = (ILoadable) CONTEXT.getBean("memoryLoadable", url, new Date(), secondContent);
+        STORAGE.put(second);
+        ILoadable secondGot = STORAGE.get(url);
         assertEquals(secondGot.getContent(), secondContent);
     }
 }

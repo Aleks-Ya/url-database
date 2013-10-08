@@ -1,8 +1,6 @@
 package ru.yaal.project.urldatabase.loadable;
 
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.URL;
 import java.util.Date;
 
@@ -13,12 +11,16 @@ import static java.lang.String.format;
  * User: Aleks
  * Date: 06.10.13
  */
-public class InputStreamLoadable extends AbstractLoadable {
+class InputStreamLoadable extends AbstractLoadable {
     private final InputStream stream;
     private boolean loaded = false;
 
     public InputStreamLoadable(InputStream stream) {
         this.stream = stream;
+    }
+
+    public InputStreamLoadable(File file) throws FileNotFoundException {
+        this.stream = new FileInputStream(file);
     }
 
     private void load() {

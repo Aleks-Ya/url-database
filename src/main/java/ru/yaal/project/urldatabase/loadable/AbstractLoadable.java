@@ -4,16 +4,15 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 
 import static java.lang.String.format;
 
-public abstract class AbstractLoadable implements ILoadable {
+abstract class AbstractLoadable implements ILoadable {
     private static final String BAD_URL_MESSAGE = "Illegal URL: %s";
     private static final String BAD_LOAD_DATE_MESSAGE = "Illegal load date: %s";
-    private final DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();//инъекция DI
+    private DateFormat dateFormat;
     private URL url;
     private byte[] content;
     private Date loadDate;
@@ -74,5 +73,9 @@ public abstract class AbstractLoadable implements ILoadable {
         } else {
             return false;
         }
+    }
+
+    public void setDateFormat(DateFormat dateFormat) {
+        this.dateFormat = dateFormat;
     }
 }

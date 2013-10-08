@@ -1,11 +1,12 @@
 package ru.yaal.project.urldatabase.storage;
 
-import ru.yaal.project.urldatabase.loadable.FileLoadable;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import ru.yaal.project.urldatabase.loadable.ILoadable;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.text.DateFormat;
@@ -15,9 +16,10 @@ import java.text.DateFormat;
  * User: Aleks
  * Date: 06.10.13
  */
-class UrlStorage extends AbstractStorage<URL> {
+class UrlStorage extends AbstractStorage<URL> implements ApplicationContextAware {
     private final ICoder<URL> coder;
     private final DateFormat dateFormat;
+    private ApplicationContext context;
 
     public UrlStorage(ICoder<URL> coder, DateFormat dateFormat) {
         this.coder = coder;
@@ -26,12 +28,8 @@ class UrlStorage extends AbstractStorage<URL> {
 
     @Override
     public ILoadable get(URL key) {
-        try {
-            File file = coder.code(key);
-            return new FileLoadable(file);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        File file = coder.code(key);
+        return (ILoadable) context.getBean("fileLoadable", file);
     }
 
     @Override
@@ -66,5 +64,10 @@ class UrlStorage extends AbstractStorage<URL> {
     @Override
     public boolean isExists(URL key) {
         return coder.code(key).exists();
+    }
+
+    @Override
+    public void setApplicationContext(ApplicationContext context) throws BeansException {
+        this.context = context;
     }
 }
