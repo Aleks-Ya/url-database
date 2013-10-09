@@ -132,4 +132,9 @@ class UrlStorage extends AbstractStorage<URL> implements ApplicationContextAware
     public void setApplicationContext(ApplicationContext context) throws BeansException {
         this.context = context;
     }
+
+    @Override
+    public String toString() {
+        return format("UrlStorage[%s]", root);
+    }
 }

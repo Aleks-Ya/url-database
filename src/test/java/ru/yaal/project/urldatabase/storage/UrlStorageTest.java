@@ -2,10 +2,14 @@ package ru.yaal.project.urldatabase.storage;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 import ru.yaal.project.urldatabase.loadable.ILoadable;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -20,6 +24,12 @@ import static uk.co.it.modular.hamcrest.date.DateMatchers.within;
 public class UrlStorageTest {
     private static final ApplicationContext TEST_CONTEXT = new ClassPathXmlApplicationContext("test-spring-config.xml");
     private static final IStorage<URL> STORAGE = TEST_CONTEXT.getBean("urlStorage", UrlStorage.class);
+    private static final List<IStorage<URL>> STORAGES_FOR_CLEAN_UP = new ArrayList<>();
+
+    @BeforeClass
+    public void beforeClass() {
+        STORAGES_FOR_CLEAN_UP.add(STORAGE);
+    }
 
     @Test(dataProvider = "loadableProvider")
     public void putAndGet(URL url, Date loadDate, byte[] content) throws MalformedURLException {
@@ -79,6 +89,7 @@ public class UrlStorageTest {
     @Test
     public void size() {
         final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
+        STORAGES_FOR_CLEAN_UP.add(storage);
         int expSize = 0;
         assertEquals(storage.size(), expSize);
         final int filesCount = 10;
@@ -93,6 +104,7 @@ public class UrlStorageTest {
     @Test
     public void clean() {
         final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
+        STORAGES_FOR_CLEAN_UP.add(storage);
         final int filesCount = 5;
         for (int i = 0; i < filesCount; i++) {
             ILoadable loadable = TEST_CONTEXT.getBean("testLoadable", ILoadable.class);
@@ -106,6 +118,7 @@ public class UrlStorageTest {
     @Test
     public void getAll() {
         final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
+        STORAGES_FOR_CLEAN_UP.add(storage);
         final int filesCount = 5;
         List<ILoadable> expected = new ArrayList<>(filesCount);
         for (int i = 0; i < filesCount; i++) {
@@ -115,6 +128,18 @@ public class UrlStorageTest {
         }
         List<ILoadable> actual = storage.getAll();
         assertEqualsNoOrder(actual.toArray(), expected.toArray());
+    }
+
+    @AfterClass
+    public void cleanStorages() throws NoSuchFieldException, IllegalAccessException {
+        for (IStorage<URL> storage : STORAGES_FOR_CLEAN_UP) {
+            UrlStorage urlStorage = (UrlStorage) storage;
+            urlStorage.clean();
+            Field rootField = UrlStorage.class.getDeclaredField("root");
+            rootField.setAccessible(true);
+            File root = (File) rootField.get(urlStorage);
+            assertTrue(root.delete());
+        }
     }
 
 }
