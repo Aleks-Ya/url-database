@@ -8,7 +8,9 @@ import ru.yaal.project.urldatabase.loadable.ILoadable;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -99,7 +101,20 @@ public class UrlStorageTest {
         assertEquals(storage.size(), filesCount);
         storage.clean();
         assertEquals(storage.size(), 0);
+    }
 
+    @Test
+    public void getAll() {
+        final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
+        final int filesCount = 5;
+        List<ILoadable> expected = new ArrayList<>(filesCount);
+        for (int i = 0; i < filesCount; i++) {
+            ILoadable loadable = TEST_CONTEXT.getBean("testLoadable", ILoadable.class);
+            storage.put(loadable);
+            expected.add(loadable);
+        }
+        List<ILoadable> actual = storage.getAll();
+        assertEqualsNoOrder(actual.toArray(), expected.toArray());
     }
 
 }

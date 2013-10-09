@@ -10,6 +10,8 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.net.URL;
 import java.text.DateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.lang.String.format;
 
@@ -71,6 +73,24 @@ class UrlStorage extends AbstractStorage<URL> implements ApplicationContextAware
     @Override
     public boolean isExists(URL key) {
         return coder.code(key).exists();
+    }
+
+    @Override
+    public List<ILoadable> getAll() {
+        List<ILoadable> all = new ArrayList<>();
+        File[] subDirs = root.listFiles();
+        if (subDirs != null) {
+            for (File subDir : subDirs) {
+                File[] files = subDir.listFiles();
+                if (files != null) {
+                    for (File file : files) {
+                        ILoadable loadable = (ILoadable) context.getBean("fileLoadable", file);
+                        all.add(loadable);
+                    }
+                }
+            }
+        }
+        return all;
     }
 
     @Override

@@ -2,6 +2,8 @@ package ru.yaal.project.urldatabase.storage;
 
 import ru.yaal.project.urldatabase.loadable.ILoadable;
 
+import java.util.List;
+
 /**
  * Интерфейс для обращения к хранилищу по заданному типу ключа
  * (URL или интервал дат).
@@ -18,6 +20,8 @@ public interface IStorage<T> {
     void delete(ILoadable loadable);
 
     boolean isExists(T key);
+
+    List<ILoadable> getAll();
 
     long size();
 

@@ -68,14 +68,29 @@ abstract class AbstractLoadable implements ILoadable {
         if (otherObj instanceof ILoadable) {
             ILoadable other = (ILoadable) otherObj;
             return getUrl().equals(other.getUrl())
-                    && getLoadDate().equals(other.getLoadDate())
+                    && isDatesEquals(getLoadDate(), other.getLoadDate())
                     && Arrays.equals(getContent(), other.getContent());
         } else {
             return false;
         }
     }
 
+    /**
+     * Даты равны, если отличаются не больше чем на 1 сек.
+     * Введено, п.ч. при сохранении в файл теряются миллисекунды.
+     */
+    private boolean isDatesEquals(Date first, Date second) {
+        long long1 = first.getTime();
+        long long2 = second.getTime();
+        return Math.abs(long1 - long2) < 1000;
+    }
+
     public void setDateFormat(DateFormat dateFormat) {
         this.dateFormat = dateFormat;
+    }
+
+    @Override
+    public final String toString() {
+        return format("Loadable[%s]", getUrl());
     }
 }
