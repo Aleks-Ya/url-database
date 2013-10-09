@@ -75,7 +75,7 @@ public class UrlStorageTest {
     }
 
     @Test
-    public void size() throws MalformedURLException {
+    public void size() {
         final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
         int expSize = 0;
         assertEquals(storage.size(), expSize);
@@ -86,6 +86,20 @@ public class UrlStorageTest {
             expSize++;
             assertEquals(storage.size(), expSize);
         }
+    }
+
+    @Test
+    public void clean() {
+        final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
+        final int filesCount = 5;
+        for (int i = 0; i < filesCount; i++) {
+            ILoadable loadable = TEST_CONTEXT.getBean("testLoadable", ILoadable.class);
+            storage.put(loadable);
+        }
+        assertEquals(storage.size(), filesCount);
+        storage.clean();
+        assertEquals(storage.size(), 0);
+
     }
 
 }
