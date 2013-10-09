@@ -18,4 +18,8 @@ public interface IStorage<T> {
     void delete(ILoadable loadable);
 
     boolean isExists(T key);
+
+    long size();
+
+    void clean();
 }

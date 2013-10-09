@@ -16,12 +16,12 @@ import static org.testng.Assert.*;
 import static uk.co.it.modular.hamcrest.date.DateMatchers.within;
 
 public class UrlStorageTest {
-    private static final ApplicationContext CONTEXT = new ClassPathXmlApplicationContext("spring-config.xml");
-    private static final IStorage<URL> STORAGE = CONTEXT.getBean("urlStorage", UrlStorage.class);
+    private static final ApplicationContext TEST_CONTEXT = new ClassPathXmlApplicationContext("test-spring-config.xml");
+    private static final IStorage<URL> STORAGE = TEST_CONTEXT.getBean("urlStorage", UrlStorage.class);
 
     @Test(dataProvider = "loadableProvider")
     public void putAndGet(URL url, Date loadDate, byte[] content) throws MalformedURLException {
-        ILoadable loadable = (ILoadable) CONTEXT.getBean("memoryLoadable", url, loadDate, content);
+        ILoadable loadable = (ILoadable) TEST_CONTEXT.getBean("memoryLoadable", url, loadDate, content);
         STORAGE.put(loadable);
         ILoadable actual = STORAGE.get(url);
         assertEquals(actual.getUrl(), url);
@@ -42,8 +42,7 @@ public class UrlStorageTest {
 
     @Test
     public void delete() throws Exception {
-        ILoadable loadable = (ILoadable) CONTEXT.getBean(
-                "memoryLoadable", new URL("http://for_delete.ru"), new Date(), "I will be deleted :(".getBytes());
+        ILoadable loadable = TEST_CONTEXT.getBean("testLoadable", ILoadable.class);
         STORAGE.put(loadable);
         assertTrue(STORAGE.isExists(loadable.getUrl()));
         STORAGE.delete(loadable);
@@ -53,7 +52,7 @@ public class UrlStorageTest {
     @Test
     public void isExists() throws Exception {
         assertFalse(STORAGE.isExists(new URL("http://i_do_not_exists.ru")));
-        ILoadable loadable = (ILoadable) CONTEXT.getBean("memoryLoadable", new URL("http://ya.ru"), new Date(), "content".getBytes());
+        ILoadable loadable = TEST_CONTEXT.getBean("testLoadable", ILoadable.class);
         STORAGE.put(loadable);
         assertTrue(STORAGE.isExists(loadable.getUrl()));
     }
@@ -63,15 +62,30 @@ public class UrlStorageTest {
         final URL url = new URL("http://for_replace.ru");
 
         final byte[] firstContent = "I will be REPLACED :(".getBytes();
-        ILoadable first = (ILoadable) CONTEXT.getBean("memoryLoadable", url, new Date(), firstContent);
+        ILoadable first = (ILoadable) TEST_CONTEXT.getBean("memoryLoadable", url, new Date(), firstContent);
         STORAGE.put(first);
         ILoadable firstGot = STORAGE.get(url);
         assertEquals(firstGot.getContent(), firstContent);
 
         final byte[] secondContent = "I will REPLACE YOU!".getBytes();
-        ILoadable second = (ILoadable) CONTEXT.getBean("memoryLoadable", url, new Date(), secondContent);
+        ILoadable second = (ILoadable) TEST_CONTEXT.getBean("memoryLoadable", url, new Date(), secondContent);
         STORAGE.put(second);
         ILoadable secondGot = STORAGE.get(url);
         assertEquals(secondGot.getContent(), secondContent);
     }
+
+    @Test
+    public void size() throws MalformedURLException {
+        final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
+        int expSize = 0;
+        assertEquals(storage.size(), expSize);
+        final int filesCount = 10;
+        for (int i = 0; i < filesCount; i++) {
+            ILoadable loadable = TEST_CONTEXT.getBean("testLoadable", ILoadable.class);
+            storage.put(loadable);
+            expSize++;
+            assertEquals(storage.size(), expSize);
+        }
+    }
+
 }

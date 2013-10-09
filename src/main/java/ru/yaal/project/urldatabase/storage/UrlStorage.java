@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.net.URL;
 import java.text.DateFormat;
 
+import static java.lang.String.format;
+
 /**
  * Обращение к хранилищу БД по URL.
  * User: Aleks
@@ -19,11 +21,15 @@ import java.text.DateFormat;
 class UrlStorage extends AbstractStorage<URL> implements ApplicationContextAware {
     private final ICoder<URL> coder;
     private final DateFormat dateFormat;
+    private final File root;
     private ApplicationContext context;
 
     public UrlStorage(ICoder<URL> coder, DateFormat dateFormat) {
+        assert (coder != null);
         this.coder = coder;
+        assert (dateFormat != null);
         this.dateFormat = dateFormat;
+        this.root = coder.getRootDir();
     }
 
     @Override
@@ -41,6 +47,7 @@ class UrlStorage extends AbstractStorage<URL> implements ApplicationContextAware
                          new BufferedOutputStream(new FileOutputStream(file, false))) {
                 bos.write(loadable.getUrl().toString().getBytes());
                 bos.write('\n');
+                assert (dateFormat != null);
                 bos.write(dateFormat.format(loadable.getLoadDate()).getBytes());
                 bos.write('\n');
                 bos.write(loadable.getContent());
@@ -64,6 +71,41 @@ class UrlStorage extends AbstractStorage<URL> implements ApplicationContextAware
     @Override
     public boolean isExists(URL key) {
         return coder.code(key).exists();
+    }
+
+    @Override
+    public long size() {
+        long result = 0;
+        File[] subDirs = root.listFiles();
+        if (subDirs != null) {
+            for (File subDir : subDirs) {
+                result += subDir.list().length;
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void clean() {
+        File[] subDirs = root.listFiles();
+        if (subDirs != null) {
+            for (File subDir : subDirs) {
+                File[] files = subDir.listFiles();
+                if (files != null) {
+                    for (File file : files) {
+                        deleteWithException(file);
+                    }
+                    deleteWithException(subDir);
+                }
+            }
+        }
+    }
+
+    private void deleteWithException(File file) {
+        boolean deleted = file.delete();
+        if (!deleted) {
+            throw new RuntimeException(format("Can't delete file: %s", file));
+        }
     }
 
     @Override

@@ -4,6 +4,7 @@ import ru.yaal.project.urldatabase.loadable.ILoadable;
 
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.security.MessageDigest;
 
 /**
@@ -18,6 +19,10 @@ class UrlCoder implements ICoder<URL> {
     public UrlCoder(File root, MessageDigest digest) {
         this.root = root;
         this.digest = digest;
+    }
+
+    public UrlCoder(Path root, MessageDigest digest) {
+        this(root.toFile(), digest);
     }
 
     private String hashToString(byte[] hash) {
@@ -43,5 +48,10 @@ class UrlCoder implements ICoder<URL> {
         String sub = sha.substring(0, 2);
         File subFolder = new File(root, sub);
         return new File(subFolder, sha);
+    }
+
+    @Override
+    public File getRootDir() {
+        return root;
     }
 }

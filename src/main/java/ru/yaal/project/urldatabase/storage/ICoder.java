@@ -13,4 +13,6 @@ public interface ICoder<T> {
     File code(ILoadable loadable);
 
     File code(T key);
+
+    File getRootDir();
 }

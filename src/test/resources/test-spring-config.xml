@@ -5,18 +5,21 @@
     <bean name="sha-1" class="java.security.MessageDigest" factory-method="getInstance" scope="prototype">
         <constructor-arg value="SHA-1"/>
     </bean>
-    <bean name="rootDir" class="java.io.File">
-        <constructor-arg index="0" value="root" type="java.lang.String"/>
+    <bean name="rootDir" class="java.nio.file.Files" factory-method="createTempDirectory" scope="prototype">
+        <constructor-arg index="0" value="UrlDatabase_temp_" type="java.lang.String"/>
+        <constructor-arg index="1">
+            <array value-type="java.nio.file.attribute.FileAttribute"/>
+        </constructor-arg>
     </bean>
     <bean name="urlCoder" class="ru.yaal.project.urldatabase.storage.UrlCoder" scope="prototype">
         <constructor-arg name="root" ref="rootDir"/>
         <constructor-arg ref="sha-1"/>
     </bean>
+    <bean name="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
     <bean name="urlStorage" class="ru.yaal.project.urldatabase.storage.UrlStorage" scope="prototype">
         <constructor-arg name="coder" ref="urlCoder"/>
         <constructor-arg name="dateFormat" ref="dateFormat"/>
     </bean>
-    <bean name="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
     <bean name="abstractLoadable" abstract="true" class="ru.yaal.project.urldatabase.loadable.AbstractLoadable"
           scope="prototype">
         <property name="dateFormat" ref="dateFormat"/>
@@ -35,4 +38,5 @@
           parent="abstractLoadable">
         <constructor-arg type="java.io.File" value="null"/>
     </bean>
+    <bean name="testLoadable" class="ru.yaal.project.urldatabase.loadable.TestLoadableFactory" scope="prototype"/>
 </beans>
