@@ -23,8 +23,8 @@ import static uk.co.it.modular.hamcrest.date.DateMatchers.within;
 
 public class UrlStorageTest {
     private static final ApplicationContext TEST_CONTEXT = new ClassPathXmlApplicationContext("test-spring-config.xml");
-    private static final IStorage<URL> STORAGE = TEST_CONTEXT.getBean("urlStorage", UrlStorage.class);
-    private static final List<IStorage<URL>> STORAGES_FOR_CLEAN_UP = new ArrayList<>();
+    private static final IUrlStorage STORAGE = TEST_CONTEXT.getBean("urlStorage", UrlStorage.class);
+    private static final List<IUrlStorage> STORAGES_FOR_CLEAN_UP = new ArrayList<>();
 
     @BeforeClass
     public void beforeClass() {
@@ -88,7 +88,7 @@ public class UrlStorageTest {
 
     @Test
     public void size() {
-        final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
+        final IUrlStorage storage = (IUrlStorage) TEST_CONTEXT.getBean("urlStorage");
         STORAGES_FOR_CLEAN_UP.add(storage);
         int expSize = 0;
         assertEquals(storage.size(), expSize);
@@ -103,7 +103,7 @@ public class UrlStorageTest {
 
     @Test
     public void clean() {
-        final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
+        final IUrlStorage storage = (IUrlStorage) TEST_CONTEXT.getBean("urlStorage");
         STORAGES_FOR_CLEAN_UP.add(storage);
         final int filesCount = 5;
         for (int i = 0; i < filesCount; i++) {
@@ -117,7 +117,7 @@ public class UrlStorageTest {
 
     @Test
     public void getAll() {
-        final IStorage<URL> storage = TEST_CONTEXT.getBean("urlStorage", IStorage.class);
+        final IUrlStorage storage = TEST_CONTEXT.getBean("urlStorage", IUrlStorage.class);
         STORAGES_FOR_CLEAN_UP.add(storage);
         final int filesCount = 5;
         List<ILoadable> expected = new ArrayList<>(filesCount);
@@ -132,7 +132,7 @@ public class UrlStorageTest {
 
     @AfterClass
     public void cleanStorages() throws NoSuchFieldException, IllegalAccessException {
-        for (IStorage<URL> storage : STORAGES_FOR_CLEAN_UP) {
+        for (IUrlStorage storage : STORAGES_FOR_CLEAN_UP) {
             UrlStorage urlStorage = (UrlStorage) storage;
             urlStorage.clean();
             Field rootField = UrlStorage.class.getDeclaredField("root");

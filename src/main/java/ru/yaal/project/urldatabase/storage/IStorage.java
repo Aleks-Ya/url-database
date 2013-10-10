@@ -5,21 +5,18 @@ import ru.yaal.project.urldatabase.loadable.ILoadable;
 import java.util.List;
 
 /**
- * Интерфейс для обращения к хранилищу по заданному типу ключа
+ * Интерфейс для обращения к хранилищу по ILoadable.
  * (URL или интервал дат).
  * User: Aleks
  * Date: 06.10.13
  */
-public interface IStorage<T> {
-    ILoadable get(T key);
+public interface IStorage {
 
     void put(ILoadable loadable);
 
-    void delete(T key);
-
     void delete(ILoadable loadable);
 
-    boolean isExists(T key);
+    boolean isExists(ILoadable loadable);
 
     List<ILoadable> getAll();
 

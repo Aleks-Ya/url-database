@@ -20,7 +20,7 @@ import static java.lang.String.format;
  * User: Aleks
  * Date: 06.10.13
  */
-class UrlStorage extends AbstractStorage<URL> implements ApplicationContextAware {
+class UrlStorage implements IUrlStorage, ApplicationContextAware {
     private final ICoder<URL> coder;
     private final DateFormat dateFormat;
     private final File root;
@@ -68,6 +68,11 @@ class UrlStorage extends AbstractStorage<URL> implements ApplicationContextAware
     @Override
     public void delete(ILoadable loadable) {
         delete(loadable.getUrl());
+    }
+
+    @Override
+    public boolean isExists(ILoadable loadable) {
+        return isExists(loadable.getUrl());
     }
 
     @Override
