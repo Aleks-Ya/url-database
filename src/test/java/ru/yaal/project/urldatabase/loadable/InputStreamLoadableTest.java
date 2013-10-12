@@ -2,6 +2,8 @@ package ru.yaal.project.urldatabase.loadable;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.io.ByteArrayInputStream;
@@ -14,7 +16,16 @@ import static java.lang.String.format;
 import static org.testng.Assert.assertEquals;
 
 public class InputStreamLoadableTest {
-    private static final ApplicationContext CONTEXT = new ClassPathXmlApplicationContext("spring-config.xml");
+    private GenericXmlApplicationContext testContext;
+
+    @BeforeClass
+    public void beforeClass() {
+        ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
+        testContext = new GenericXmlApplicationContext();
+        testContext.load("classpath:test-spring-config.xml");
+        testContext.setParent(context);
+        testContext.refresh();
+    }
 
     @Test
     public void readFromInputStream() throws Exception {
@@ -23,9 +34,9 @@ public class InputStreamLoadableTest {
         final String content = "fuck off";
         String data = format("%s\n%s\n%s", url, date, content);
         InputStream is = new ByteArrayInputStream(data.getBytes());
-        ILoadable loadable = (ILoadable) CONTEXT.getBean("inputStreamLoadable", is);
+        ILoadable loadable = (ILoadable) testContext.getBean("inputStreamLoadable", is);
         assertEquals(loadable.getUrl(), new URL(url));
-        DateFormat dateFormat = SimpleDateFormat.getDateTimeInstance();//инъекция DI
+        DateFormat dateFormat = (DateFormat) testContext.getBean("dateFormat");
         assertEquals(loadable.getLoadDate(), dateFormat.parse(date));
         assertEquals(loadable.getContent(), content.getBytes());
     }

@@ -5,6 +5,19 @@
     <bean name="sha-1" class="java.security.MessageDigest" factory-method="getInstance" scope="prototype">
         <constructor-arg value="SHA-1"/>
     </bean>
+    <bean name="dateDMYHMS" class="ru.yaal.project.urldatabase.spring.DateFactory" scope="prototype">
+        <constructor-arg name="day" value="0"/>
+        <constructor-arg name="month" value="0"/>
+        <constructor-arg name="year" value="0"/>
+        <constructor-arg name="hours" value="0"/>
+        <constructor-arg name="minutes" value="0"/>
+        <constructor-arg name="seconds" value="0"/>
+    </bean>
+    <bean name="dateDMY" class="ru.yaal.project.urldatabase.spring.DateFactory" scope="prototype">
+        <constructor-arg name="day" value="0"/>
+        <constructor-arg name="month" value="0"/>
+        <constructor-arg name="year" value="0"/>
+    </bean>
     <bean name="rootDir" class="java.io.File">
         <constructor-arg index="0" value="root" type="java.lang.String"/>
     </bean>
@@ -15,6 +28,9 @@
     <bean name="urlStorage" class="ru.yaal.project.urldatabase.storage.UrlStorage" scope="prototype">
         <constructor-arg name="coder" ref="urlCoder"/>
         <constructor-arg name="dateFormat" ref="dateFormat"/>
+    </bean>
+    <bean name="dateStorage" class="ru.yaal.project.urldatabase.storage.DateStorage" scope="prototype">
+        <constructor-arg name="urlStorage" ref="urlStorage"/>
     </bean>
     <bean name="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
     <bean name="abstractLoadable" abstract="true" class="ru.yaal.project.urldatabase.loadable.AbstractLoadable"

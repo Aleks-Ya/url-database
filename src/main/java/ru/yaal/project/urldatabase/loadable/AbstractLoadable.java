@@ -5,6 +5,7 @@ import java.net.URL;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
 
 import static java.lang.String.format;
@@ -48,9 +49,13 @@ abstract class AbstractLoadable implements ILoadable {
         return loadDate;
     }
 
+    /**
+     * Устанавливает дату загрузки.
+     * Миллисекунды округляются до 0.
+     */
     protected final void setLoadDate(String loadDate) {
         try {
-            this.loadDate = dateFormat.parse(loadDate);
+            setLoadDate(dateFormat.parse(loadDate));
         } catch (ParseException | NullPointerException e) {
             throw new IllegalArgumentException(format(BAD_LOAD_DATE_MESSAGE, loadDate));
         }
@@ -60,7 +65,10 @@ abstract class AbstractLoadable implements ILoadable {
         if (loadDate == null) {
             throw new IllegalArgumentException(format(BAD_LOAD_DATE_MESSAGE, loadDate));
         }
-        this.loadDate = loadDate;
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(loadDate);
+        calendar.set(Calendar.MILLISECOND, 0);
+        this.loadDate = calendar.getTime();
     }
 
     @Override

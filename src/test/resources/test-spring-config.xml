@@ -2,9 +2,6 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
-    <bean name="sha-1" class="java.security.MessageDigest" factory-method="getInstance" scope="prototype">
-        <constructor-arg value="SHA-1"/>
-    </bean>
     <bean name="rootDir" class="java.nio.file.Files" factory-method="createTempDirectory" scope="prototype">
         <constructor-arg index="0" value="UrlDatabase_temp_" type="java.lang.String"/>
         <constructor-arg index="1">
@@ -15,28 +12,12 @@
         <constructor-arg name="root" ref="rootDir"/>
         <constructor-arg ref="sha-1"/>
     </bean>
-    <bean name="dateFormat" class="java.text.DateFormat" factory-method="getDateTimeInstance"/>
     <bean name="urlStorage" class="ru.yaal.project.urldatabase.storage.UrlStorage" scope="prototype">
         <constructor-arg name="coder" ref="urlCoder"/>
         <constructor-arg name="dateFormat" ref="dateFormat"/>
     </bean>
-    <bean name="abstractLoadable" abstract="true" class="ru.yaal.project.urldatabase.loadable.AbstractLoadable"
-          scope="prototype">
-        <property name="dateFormat" ref="dateFormat"/>
-    </bean>
-    <bean name="memoryLoadable" class="ru.yaal.project.urldatabase.loadable.MemoryLoadable" scope="prototype"
-          parent="abstractLoadable">
-        <constructor-arg type="java.net.URL" value="null"/>
-        <constructor-arg type="java.util.Date" value="null"/>
-        <constructor-arg type="byte[]" value="null"/>
-    </bean>
-    <bean name="inputStreamLoadable" class="ru.yaal.project.urldatabase.loadable.InputStreamLoadable" scope="prototype"
-          parent="abstractLoadable">
-        <constructor-arg type="java.io.InputStream" value="null"/>
-    </bean>
-    <bean name="fileLoadable" class="ru.yaal.project.urldatabase.loadable.InputStreamLoadable" scope="prototype"
-          parent="abstractLoadable">
-        <constructor-arg type="java.io.File" value="null"/>
+    <bean name="dateStorage" class="ru.yaal.project.urldatabase.storage.DateStorage" scope="prototype">
+        <constructor-arg name="urlStorage" ref="urlStorage"/>
     </bean>
     <bean name="testLoadable" class="ru.yaal.project.urldatabase.loadable.TestLoadableFactory" scope="prototype"/>
 </beans>
