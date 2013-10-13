@@ -11,6 +11,7 @@ import java.io.FileOutputStream;
 import java.net.URL;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import static java.lang.String.format;
@@ -57,6 +58,13 @@ class UrlStorage implements IUrlStorage, ApplicationContextAware {
             }
         } catch (Exception e) {
             throw new RuntimeException(e.getMessage(), e);
+        }
+    }
+
+    @Override
+    public void put(Collection<ILoadable> loadables) {
+        for (ILoadable loadable : loadables) {
+            put(loadable);
         }
     }
 

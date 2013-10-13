@@ -2,6 +2,7 @@ package ru.yaal.project.urldatabase.storage;
 
 import ru.yaal.project.urldatabase.loadable.ILoadable;
 
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -13,6 +14,8 @@ import java.util.List;
 public interface IStorage {
 
     void put(ILoadable loadable);
+
+    void put(Collection<ILoadable> loadables);
 
     void delete(ILoadable loadable);
 

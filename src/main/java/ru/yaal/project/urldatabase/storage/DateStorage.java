@@ -3,6 +3,7 @@ package ru.yaal.project.urldatabase.storage;
 import ru.yaal.project.urldatabase.loadable.ILoadable;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -58,6 +59,11 @@ public class DateStorage implements IDateStorage {
     @Override
     public void put(ILoadable loadable) {
         urlStorage.put(loadable);
+    }
+
+    @Override
+    public void put(Collection<ILoadable> loadables) {
+        urlStorage.put(loadables);
     }
 
     @Override

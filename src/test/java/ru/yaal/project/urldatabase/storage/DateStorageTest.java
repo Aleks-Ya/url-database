@@ -13,10 +13,12 @@ import java.io.File;
 import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Random;
 
 import static java.lang.String.format;
-import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertEqualsNoOrder;
 import static org.testng.Assert.assertTrue;
 
@@ -63,9 +65,7 @@ public class DateStorageTest {
         all.addAll(middle);
         all.add(min);
         all.add(max);
-        for (ILoadable loadable : all) {
-            storage.put(loadable);
-        }
+        storage.put(all);
     }
 
     @Test
