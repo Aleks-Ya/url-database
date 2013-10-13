@@ -40,11 +40,11 @@ public class DateFactory implements FactoryBean<Date> {
 
     @Override
     public Class<?> getObjectType() {
-        return null;  //To change body of implemented methods use File | Settings | File Templates.
+        return Date.class;
     }
 
     @Override
     public boolean isSingleton() {
-        return false;  //To change body of implemented methods use File | Settings | File Templates.
+        return false;
     }
 }
